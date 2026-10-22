@@ -9,17 +9,31 @@ on:
 
 permissions:
   contents: read
+  packages: write
 
 jobs:
   test:
     name: Run Tests
     runs-on: ubuntu-latest
 
+    env:
+      APP_NAME: purchase-service
+      SERVER_PORT: 8080
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_NAME: purchasedb
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DDL_AUTO: create-drop
+      SHOW_SQL: 'false'
+      FORMAT_SQL: 'false'
+      DB_TIMEZONE: UTC
+
     services:
       postgres:
         image: postgres:16-alpine
         ports:
-          - 5432/5432
+          - 5432:5432
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -29,19 +43,6 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
-
-      env:
-        APP_NAME: purchase-service
-        SERVER_PORT: 8080
-        DB_HOST: localhost
-        DB_PORT: 5432
-        DB_NAME: purchasedb
-        DB_USER: postgres
-        DB_PASSWORD: postgres
-        DDL_AUTO: create-drop
-        SHOW_SQL: 'false'
-        FORMAT_SQL: 'false'
-        DB_TIMEZONE: UTC
 
     steps:
       - name: Checkout
